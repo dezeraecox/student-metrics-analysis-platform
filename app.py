@@ -90,7 +90,7 @@ def validate_data(data):
     for sheet_name in sheet_names:
         if 'wellbeing' in sheet_name.lower():
             sheet_types['wellbeing'].append(sheet_name)
-        elif 'year' in sheet_name.lower():
+        elif 'grades' in sheet_name.lower():
             sheet_types['grades'].append(sheet_name)
         elif 'student info' in sheet_name.lower():
             student_info = data[sheet_name]
@@ -109,18 +109,17 @@ def validate_data(data):
             for sheet_name in sheet_types['grades']:
                 students_to_annotate.append(data[sheet_name][['Student Id', 'Surname', 'First Name']])
                 st.write(f'**{sheet_name}**')
-                col1, col2, col3, col4 = st.beta_columns(4)
-                _, grade, year = [x.strip('') for x in sheet_name.split(' ')]
-                grade = col1.text_input(f"Grade", grade, key=f'{sheet_name}_grade')
-                year = col2.text_input(f"Year", year, key=f'{sheet_name}_year')
+                col1, col2, col3 = st.beta_columns(3)
+                _, year = [x.strip('') for x in sheet_name.split(' ')]
+                year = col1.text_input(f"Year", year, key=f'{sheet_name}_year')
                 task_cols = [col for col in data[sheet_name].keys() if 'task' in col.lower()]
                 for task in task_cols:
-                    task_number = col3.text_input(f"Task number", task.split(' ')[1], key=f'{year}_{task}_number')
-                    task_maximum = col4.text_input(f"Task maximum", task.split('/')[-1], key=f'{year}_{task}_max')
+                    task_number = col2.text_input(f"Task number", task.split(' ')[1], key=f'{year}_{task}_number')
+                    task_maximum = col3.text_input(f"Task maximum", task.split('/')[-1], key=f'{year}_{task}_max')
                     data[sheet_name].rename(columns={task: f'Task {task_number} total / {task_maximum}'}, inplace=True)
-                    task_names.append([f'Year {grade} {year}', year, grade, f'Task {task_number} total / {task_maximum}', task_number, task_maximum])
-                data[f'Year {grade} {year}'] = data.pop(sheet_name)
-            task_names = pd.DataFrame(task_names, columns=['Sheet name', 'Year', 'Grade', 'Column name', 'Task number', 'Maximum score'])
+                    task_names.append([f'Grades {year}', year, f'Task {task_number} total / {task_maximum}', task_number, task_maximum])
+                data[f'Grades {year}'] = data.pop(sheet_name)
+            task_names = pd.DataFrame(task_names, columns=['Sheet name', 'Year', 'Column name', 'Task number', 'Maximum score'])
         # compile students from all task sheets for annotation
         students_to_annotate = pd.concat(students_to_annotate).drop_duplicates()
 
@@ -208,7 +207,7 @@ def validate_data(data):
             # preview task info
             data['task_names'] = task_names
             st.markdown("**Academic score summary**")
-            st.dataframe(task_names[['Year', 'Grade', 'Task number', 'Maximum score']])
+            st.dataframe(task_names[['Year', 'Task number', 'Maximum score']])
 
         col1, col2 = st.beta_columns(2)
         if col1.button("Download compiled dataset"):
@@ -235,13 +234,12 @@ def summarise_dataset(data):
             year_data[col_name] = year_data[col_name].astype(float)
             year_data.rename(columns={col_name: f"Task {df['Task number'].tolist()[0]}"}, inplace=True)
         year_data['Year'] = df['Year'].astype(int).tolist()[0]
-        year_data['Grade'] = df['Grade'].astype(int).tolist()[0]
         task_data.append(year_data)
     
     tasks = pd.concat(task_data)
     tasks = pd.melt(
         tasks, 
-        id_vars=['Student Id', 'First Name', 'Surname', 'Year', 'Grade'],
+        id_vars=['Student Id', 'First Name', 'Surname', 'Year'],
         value_vars=[col for col in tasks.columns.tolist() if 'Task' in col],
         var_name='Task',
         value_name='score'
@@ -554,7 +552,7 @@ def run_wellbeing():
     # read in df
     wellbeing = state.data['wb_summary'].copy()
 
-    # prepare order info # TODO 2021 March 07: Adjust to handle different subject names
+    # prepare order info
     type_labels = {0: 'Whole School', 1: 'Positives English', 2: 'Negatives English'}
     type_invert = {v: k for k, v in type_labels.items()}
 
