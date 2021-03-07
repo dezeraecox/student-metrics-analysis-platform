@@ -1,4 +1,6 @@
-# Student Metrics Analysis Platform
+<p align='center'>
+<img src='utilities/banner.png'>
+</p>
 
 This repository contains source code for the Student Metrics Analysis Platform. This streamlit app enables analysis of student academic and pastoral performance over time. App provides template data entry document and example data. Summary statistics and data visualisations are then generated for student task performance and wellbeing data.
 
