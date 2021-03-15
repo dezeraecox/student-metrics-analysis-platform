@@ -66,7 +66,7 @@ def upload_dataset():
     if data_file is None:
         return False    
 
-    data = pd.read_excel(data_file, sheet_name=None)
+    data = pd.read_excel(data_file, sheet_name=None, engine='openpyxl')
     state.data_path = data_file
 
     return data    
@@ -331,8 +331,8 @@ def generate_introduction():
     image = Image.open('utilities/banner.png')
     st.image(image)
 
-    template = pd.read_excel('utilities/template.xlsx', sheet_name=None)
-    example = pd.read_excel('utilities/example_data.xlsx', sheet_name=None)
+    template = pd.read_excel('utilities/template.xlsx', sheet_name=None, engine='openpyxl')
+    example = pd.read_excel('utilities/example_data.xlsx', sheet_name=None, engine='openpyxl')
     
     template_link = download_link(df_to_excel_bytes(template), 'template.xlsx', 'template document')
     example_link = download_link(df_to_excel_bytes(template), 'example_data.xlsx', 'example dataset')
@@ -405,7 +405,7 @@ def generate_introduction():
 
 # Streamlit encourages well-structured code, like starting execution in a main() function.
 def main():
-    
+
     # Set app title and icon for browser tab
     favicon = Image.open('utilities/icon.png')
     st.set_page_config(page_title='PEARS', page_icon = favicon, layout = 'wide', initial_sidebar_state = 'auto')
