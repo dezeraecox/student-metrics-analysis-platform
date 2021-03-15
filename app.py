@@ -7,13 +7,13 @@ import seaborn as sns
 import json
 import base64
 from collections import defaultdict
-import hierarchical_axes as ha
+import src.hierarchical_axes as ha
 import zipfile
 import io
 from PIL import Image
 
 
-import SessionState  # Assuming SessionState.py lives on this folder
+from src import SessionState  # Assuming SessionState.py lives on this folder
 
 # remove uploader warning
 st.set_option('deprecation.showfileUploaderEncoding', False)
@@ -328,42 +328,75 @@ def insert_new_line(num=1):
 
 
 def generate_introduction():
-    image = Image.open('icon.png')
-    col1, col2 = st.beta_columns([1, 3])
-    col1.image(image)
-    col2.markdown("# Welcome to the Performance Evaluation and Analytics Reporting System! ")
+    st.markdown("# Welcome to the ")
+    image = Image.open('utilities/banner.png')
+    st.image(image)
 
-    template = pd.read_excel('template.xlsx', sheet_name=None)
+    template = pd.read_excel('utilities/template.xlsx', sheet_name=None)
+    example = pd.read_excel('utilities/example_data.xlsx', sheet_name=None)
     
     template_link = download_link(df_to_excel_bytes(template), 'template.xlsx', 'template document')
+    example_link = download_link(df_to_excel_bytes(template), 'example_data.xlsx', 'example dataset')
 
     st.markdown(
     f"""
-    The PEARs platform provides a set of simple analysis tools to investigate student performance and wellbeing metrics. The outputs are designed to provide a holistic overview of a student's performance compared to their peers.
-    """)
+    The PEARS platform provides a set of simple analysis tools to investigate student performance and wellbeing metrics. The outputs are designed to provide a holistic overview of a student's performance compared to their peers.
 
-    st.markdown(
-    f"""
     ## Instructions
 
-    Before getting started, it is necessary to compile raw data from students of interest which needs to be preformatted according to the {template_link}. Detailed instructions on preparing the dataset for uploaded are contained within the template, and should be followed to ensure proper processing of your dataset.
-    
-    After completing the template, proceed to the "Process data" functionality using the left navigational pane. This function will guide you through processing the prepared dataset, and allow you to update any mislabelled data. If your uploaded dataset did not include the optional Student Info sheet, you will also need to annotate all students in the cohort. From here, you may also download the compiled Student Info data to include during subsequent analyses. Finally, the dataset following processing is summarised, including the total number of students identified, number of tracked students in the class and finally any students lacking gender annotations. It is recommended to ensure no students are lacking annotations before proceeding, as they will otherwise not contribute to the class and cohort statistics. Once satisfied with the analyses, click submit to finalise the data upload process. Optionally, you may download a clean and processed version of the dataset which can be reuploading to repeat any subsequent analysis steps.
+    """)
+    getting_started = st.beta_expander("Getting started", expanded=False)
+    with getting_started:
+        st.markdown(
+        f"""
+        To get started, it is necessary to compile raw data from students of interest which needs to be preformatted according to the {template_link}. Detailed instructions on preparing the dataset for upload are contained within the template, and should be followed to ensure proper processing of your dataset.
 
-    After processing the metrics dataset, you may then proceed to the reporting phases. Separate pages are provided to analyse the Grades and Wellbeing datasets, which can be accessed via the navigation pane. If, at any time, you wish to add additional students to the 'tracked' class, you may return to the "Process data" screen and update the Student Identifiers pane by selecting the checkbox next to the student of interest. To assess their metrics, proceed to the Grades or Wellbeing analyses tabs and repeat the plotting processes.
+        Alternatively, to explore the app functionality on a fictitious dataset you may download the {example_link} for use in all subsequent steps.
+        """, unsafe_allow_html=True)
 
-    Finally, once satisfied with the plots provided you may proceed to plot the relevant data for all tracked students by clicking the "Generate all individual student plots" button. Once completed, a second button will appear to generate the download file, and finally a download link will appear next to this button. Clicking the download link will download the plots as a ".zip" folder, which can be unzipped using standard extraction tools for Windows, Mac or Linux.
+    process_data_instructions = st.beta_expander("Data preprocessing", expanded=False)
+    with process_data_instructions:
+        st.markdown(
+        f"""
+        After completing the template, proceed to the "Process data" functionality using the left navigational pane. This function will guide you through processing the prepared dataset, and allow you to update any mislabelled data. If your uploaded dataset did not include the optional Student Info sheet, you will also need to annotate all students in the cohort. From here, you may also download the compiled Student Info data to include during subsequent analyses. 
+        
+        After completing each of the annotation steps, a summary of the dataset parameters is shown including the total number of students identified, number of tracked students in the class and number of students lacking gender annotations. It is recommended to ensure no students are lacking annotations before proceeding, as they will otherwise not contribute to the class and cohort statistics. Once satisfied with the analyses, click submit to finalise the data upload process. Optionally, you may download a clean and processed version of the dataset which can be reuploaded to repeat any subsequent analysis steps.
+        """, unsafe_allow_html=True)
 
-    In the event of an unresolvable error, please proceed to the help and troubleshooting page. Here, you will find guides to the most common errors, and can request additional assistance if your issue is not resolved.
+    analysis_instructions = st.beta_expander("Analysis", expanded=False)
+    with analysis_instructions:
+        st.markdown(
+        f"""
+        After preparing the metrics dataset, you may then proceed to the reporting phases. Separate pages are provided to analyse the Grades and Wellbeing datasets, which can be accessed via the navigation pane. If, at any time, you wish to add additional students to the 'tracked' class, you may return to the "Process data" screen and update the Student Identifiers pane by selecting the checkbox next to the student of interest. To assess their metrics, proceed to the Grades or Wellbeing analyses tabs and repeat the plotting processes.
+        """, unsafe_allow_html=True)
 
+    download_instructions = st.beta_expander("Download summary graphs", expanded=False)
+    with download_instructions:
+        st.markdown(
+        f"""
+        Finally, once satisfied with the plot preview you may proceed to generate the relevant graphs for all tracked students by clicking the "Generate all individual student plots" button. Once completed, a second button will appear to generate the download file, and finally a download link will appear next to this button. Clicking the download link will download the plots as a ".zip" folder, which can be unzipped using standard extraction tools for Windows, Mac or Linux.
+        """, unsafe_allow_html=True)
 
-    """, unsafe_allow_html=True)
+    troubleshooting = st.beta_expander("Troubleshooting", expanded=False)
+    with troubleshooting:
+        st.markdown(
+        f"""
+        Most errors are the result of inconsistencies in the data format provided compared to that required by the app. If you receive an error message during the upload or graphing processes, please carefully check the dataset you have provided to ensure it matches the template directions. You can also test the overall app functionality using the {example_link}.  In the event of an unresolvable error, please proceed to the contact page via the left navigation pane to submit a report. Please include as much information as possible, including which part of the analysis process you arrived at the error and any details of the error message itself.
+
+        """, unsafe_allow_html=True)
+
+    contact = st.beta_expander("Contact", expanded=False)
+    with contact:
+        st.markdown(
+        f"""
+        To get in touch with the PEARS team, please proceed to the contact page via the left navigation pane. 
+        """)
 
     insert_new_line(num=5)
 
     st.markdown(
     f"""
-    <small>*Disclaimer: the data collected and generated by this platform are not stored or retained, however no gaurantee is provided on the end-to-end security of this information. In addition, the information generated here is provided on an “as is” basis with no guarantees of completeness, accuracy, or usefulness. Any action you take as a result of this information is done so at your own risk.*</small>
+    <small>*Disclaimer: the data collected and generated by this platform are not stored or retained, however no guarantee is provided on the end-to-end security of any uploaded or downloaded information. In addition, the information generated here is provided on an “as is” basis with no guarantees of completeness, accuracy, or usefulness. Any action you take as a result of this information is done so at your own risk.*</small>
         
             """, unsafe_allow_html=True
         )
@@ -390,9 +423,9 @@ def main():
         )
 
 
-
+    logo_box = st.sidebar.empty()
     app_mode = st.sidebar.selectbox("Choose functionality:",
-        ["Home", "Prepare dataset", "Academic performance analysis", "Wellbeing analysis", 'Help & FAQ'])
+        ["Home", "Prepare dataset", "Academic performance analysis", "Wellbeing analysis", 'Contact'])
 
     if not hasattr(state, 'data_processed'):
         state.data_processed = False
@@ -402,7 +435,8 @@ def main():
 
     
     if app_mode == 'Prepare dataset':
-        st.markdown("# Student Performance Analysis Platform")
+        logo_box.image(Image.open('utilities/banner.png'))
+        # st.markdown("# Student Performance Analysis Platform")
         if not hasattr(state, 'data'):
             data = upload_dataset()
         else:
@@ -417,7 +451,7 @@ def main():
     
 
     elif app_mode == "Academic performance analysis":
-        st.markdown("# Student Performance Analysis Platform")
+        logo_box.image(Image.open('utilities/banner.png'))
         if state.data_processed:
             # TODO 2021 March 05: Add mechanism to find output directory and automatically save figs --> Start here!
             grade_plots = run_grades()
@@ -428,15 +462,17 @@ def main():
 
     
     elif app_mode == "Wellbeing analysis":
-        st.markdown("# Student Performance Analysis Platform")
+        logo_box.image(Image.open('utilities/banner.png'))
         if state.data_processed:
             welbeing_plots = run_wellbeing()
 
         else:
             st.sidebar.markdown("To begin, you must validate your prepared dataset. \n Please select 'Prepare data'.")
 
-    elif app_mode == "Help & FAQ":
-        st.markdown(" ") # TODO 2021 March 07: Generate FAQ and Help/contact form --> potentially using typeform?
+    elif app_mode == "Contact":
+        logo_box.image(Image.open('utilities/banner.png'))
+        # Added typeform from https://admin.typeform.com/form/v5tPfvch/results
+        st.components.v1.html('<div class="typeform-widget" data-url="https://form.typeform.com/to/v5tPfvch?typeform-medium=embed-snippet" data-transparency="50" data-hide-headers="true" data-hide-footer="true" style="width: 100%; height: 500px;"></div> <script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id="typef_orm", b="https://embed.typeform.com/"; if(!gi.call(d,id)) { js=ce.call(d,"script"); js.id=id; js.src=b+"embed.js"; q=gt.call(d,"script")[0]; q.parentNode.insertBefore(js,q) } })() </script>', height=750, width=750)
 
 
 
