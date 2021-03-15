@@ -2,7 +2,7 @@
 <img src='utilities/banner.png'>
 </p>
 
-This repository contains source code for the PEAS student metrics analysis platform. This streamlit app enables analysis of student academic and pastoral performance over time for specific students within a cohort. The app provides a template data entry document and example data, which can be used to test the summary statistics and data visualisation capabilities with respect to student task performance and wellbeing data.
+This repository contains source code for the PEARS student metrics analysis platform. This streamlit app enables analysis of student academic and pastoral performance over time for specific students within a cohort. The app provides a template data entry document and example data, which can be used to test the summary statistics and data visualisation capabilities with respect to student task performance and wellbeing data.
 
 
 ## Getting started
