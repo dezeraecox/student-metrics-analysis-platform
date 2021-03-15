@@ -7,11 +7,11 @@ dependencies:
   - numpy
   - matplotlib
   - seaborn
-  - zipfile
   - pillow
   - numpy
   - pandas
   - loguru
-
+  - zipp
   pip:
     - names
+
