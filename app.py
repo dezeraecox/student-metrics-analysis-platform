@@ -405,6 +405,10 @@ def generate_introduction():
 
 # Streamlit encourages well-structured code, like starting execution in a main() function.
 def main():
+    
+    # Set app title and icon for browser tab
+    favicon = Image.open('utilities/icon.png')
+    st.set_page_config(page_title='PEARS', page_icon = favicon, layout = 'wide', initial_sidebar_state = 'auto')
 
     st.markdown(
             f"""
