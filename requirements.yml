@@ -12,6 +12,9 @@ dependencies:
   - pandas
   - loguru
   - zipp
+  - xlrd
+  - xlsxwriter
+  - openpyxl
   pip:
     - names
 
