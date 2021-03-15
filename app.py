@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import json
 import base64
 from collections import defaultdict
 import src.hierarchical_axes as ha
@@ -453,7 +452,6 @@ def main():
     elif app_mode == "Academic performance analysis":
         logo_box.image(Image.open('utilities/banner.png'))
         if state.data_processed:
-            # TODO 2021 March 05: Add mechanism to find output directory and automatically save figs --> Start here!
             grade_plots = run_grades()
 
         else:

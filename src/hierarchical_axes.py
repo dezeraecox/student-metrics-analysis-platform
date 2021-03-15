@@ -1,12 +1,13 @@
+import numpy as np
+import pandas as pd
+
+from matplotlib import pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
 import matplotlib.transforms as transforms
 import matplotlib.pyplot as plt
 import matplotlib.lines as lines
-from itertools import groupby
-import numpy as np
-import pandas as pd
-from matplotlib import pyplot as plt
+
 
 # Generic formatting functions applied to all plots
 def annotate_xrange(xmin, xmax,
